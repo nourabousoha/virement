@@ -20,7 +20,9 @@ def save_last_remise(n_remise):
 def generate_output_filename(cod_emet, cod_dest, n_remise):
     now = datetime.now()
     dat_gen = now.strftime("%Y%m%d")  # Format YYYYMMDD pour l'année et le mois de la génération
-    return f"bvov{cod_emet}{cod_dest}0000{dat_gen}{n_remise}.unl"
+    numeric_cod_emet = extract_numeric_part(cod_emet)
+    numeric_cod_dest = extract_numeric_part(cod_dest)
+    return f"bvov{numeric_cod_emet}{numeric_cod_dest}{dat_gen}{n_remise}.unl"
 
 def extract_numeric_part(code):
     # Utilisation de regex pour extraire la partie numérique du code
@@ -42,10 +44,6 @@ def excel_to_text(input_file, output_file, cod_emet, cod_dest, n_remise, has_hea
     year_gen = now.strftime("%Y")  # Année de la génération au format YYYY
     month_gen = now.strftime("%m")  # Mois de la génération au format MM
     
-    # Extract numeric parts of cod_emet and cod_dest
-    numeric_cod_emet = extract_numeric_part(cod_emet)
-    numeric_cod_dest = extract_numeric_part(cod_dest)
-    
     # Write to text file
     with open(output_file, 'w') as f:
         # Write header
@@ -57,15 +55,26 @@ def excel_to_text(input_file, output_file, cod_emet, cod_dest, n_remise, has_hea
         f.write(f"@cod_dest:{cod_dest}\n")
         f.write(f"@N_remise:{n_remise}\n")
         f.write(f"@nbr_enr:{len(df)}\n")
-        f.write(f"@taille(octets):{os.path.getsize(output_file)}\n")
+        # Place holder for @taille
+        f.write("@taille(octets):\n")
         f.write(f"@utilisateur:{utilisateur}\n")
         
         # Iterate through each row of the DataFrame
         for index, row in df.iterrows():
             # Convert row to string with pipe separator
-            line = f"{numeric_cod_emet}|{year_gen}|{month_gen}|{n_remise}|{'|'.join(map(str, row))}"
+            line = f"{cod_emet}|{year_gen}|{month_gen}|{n_remise}|{'|'.join(map(str, row))}"
             # Write line to text file
             f.write(line + '\n')
+    
+    # Calculate file size after writing
+    taille_octets = os.path.getsize(output_file)
+    
+    # Rewrite @taille with actual file size
+    with open(output_file, 'r+') as f:
+        content = f.read()
+        f.seek(0)
+        f.write(content.replace("@taille(octets):\n", f"@taille(octets):{taille_octets}\n"))
+        f.truncate()
 
 # Streamlit Interface en français
 st.title('Conversion de fichier Excel en fichier Texte')
