@@ -22,7 +22,7 @@ def generate_output_filename(cod_emet, cod_dest, n_remise):
     dat_gen = now.strftime("%Y%m%d")  # Format YYYYMMDD pour l'année et le mois de la génération
     numeric_cod_emet = extract_numeric_part(cod_emet)
     numeric_cod_dest = extract_numeric_part(cod_dest)
-    return f"bvov{numeric_cod_emet}{numeric_cod_dest}{dat_gen}{n_remise}.unl"
+    return f"bvov{numeric_cod_emet}{numeric_cod_dest}0000{dat_gen}{n_remise}.unl"
 
 def extract_numeric_part(code):
     # Utilisation de regex pour extraire la partie numérique du code
