@@ -34,6 +34,7 @@ def extract_numeric_part(code):
 
 def excel_to_text(input_file, output_file, cod_emet, cod_dest, n_remise, has_header, utilisateur):
     # Read Excel file
+    numeric_cod_emet = extract_numeric_part(cod_emet)
     if has_header:
         df = pd.read_excel(input_file, header=None)
     else:
@@ -62,7 +63,7 @@ def excel_to_text(input_file, output_file, cod_emet, cod_dest, n_remise, has_hea
         # Iterate through each row of the DataFrame
         for index, row in df.iterrows():
             # Convert row to string with pipe separator
-            line = f"{cod_emet}|{year_gen}|{month_gen}|{n_remise}|{'|'.join(map(str, row))}"
+            line = f"{numeric_cod_emet}|{year_gen}|{month_gen}|{n_remise}|{'|'.join(map(str, row))}"
             # Write line to text file
             f.write(line + '\n')
     
