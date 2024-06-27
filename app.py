@@ -68,7 +68,7 @@ def excel_to_text(input_file, output_file, cod_emet, cod_dest, n_remise, has_hea
            line = f"{numeric_cod_emet}|{year_gen}|{month_gen}|{n_remise}|{'|'.join(map(str, formatted_row))}"
 
             # Write line to text file
-            f.write(line + '\n')
+           f.write(line + '\n')
     
     # Calculate file size after writing
     taille_octets = os.path.getsize(output_file)
