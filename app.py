@@ -68,6 +68,6 @@ if uploaded_file is not None:
             save_last_remise(n_remise)
         st.success(f'Transformation terminée. Le fichier a été enregistré sous le nom {output_file}.')
 
-    if st.button("Afficher le fichier texte"):
-        with open(output_file, 'r') as f:
-            st.text(f.read())
+        if st.button("Afficher le fichier texte"):
+            with open(output_file, 'r') as f:
+                st.text(f.read())
