@@ -39,7 +39,7 @@ def excel_to_text(input_file, output_file, cod_emet, cod_dest, n_remise, has_hea
         df = pd.read_excel(input_file, header=None)
     else:
         df = pd.read_excel(input_file)
-    formatted_df = df.to_string(index=False, float_format="{:,}".format)
+   
 
     # Generate header information
     now = datetime.now()
@@ -64,8 +64,8 @@ def excel_to_text(input_file, output_file, cod_emet, cod_dest, n_remise, has_hea
         # Iterate through each row of the DataFrame
         for index, row in df.iterrows():
             # Convert row to string with pipe separator
-           
-            line = f"{cod_emet}|{year_gen}|{month_gen}|{n_remise}|{'|'.join(formatted_df.iloc[index])}"
+           formatted_row = [str(val) if not isinstance(val, str) and pd.api.types.is_numeric_dtype(val) else val for val in row]
+           line = f"{numeric_cod_emet}|{year_gen}|{month_gen}|{n_remise}|{'|'.join(map(str, formatted_row))}"
 
             # Write line to text file
             f.write(line + '\n')
