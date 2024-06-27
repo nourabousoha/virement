@@ -36,9 +36,9 @@ def excel_to_text(input_file, output_file, cod_emet, cod_dest, n_remise, has_hea
     # Read Excel file
     numeric_cod_emet = extract_numeric_part(cod_emet)
     if has_header:
-        df = pd.read_excel(input_file, header=None)
+        df = pd.read_csv(input_file, header=None)
     else:
-        df = pd.read_excel(input_file)
+        df = pd.read_csv(input_file)
    
 
     # Generate header information
@@ -88,7 +88,7 @@ def excel_to_text(input_file, output_file, cod_emet, cod_dest, n_remise, has_hea
 # Streamlit Interface en français
 st.title('Conversion de fichier Excel en fichier Texte')
 
-uploaded_file = st.file_uploader("Choisissez un fichier Excel", type=["xlsx", "xls"])
+uploaded_file = st.file_uploader("Choisissez un fichier Excel", type=["xlsx", "xls","csv"])
 
 if uploaded_file is not None:
     st.write("Fichier téléchargé:", uploaded_file.name)
