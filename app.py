@@ -63,7 +63,8 @@ def excel_to_text(input_file, output_file, cod_emet, cod_dest, n_remise, has_hea
         # Iterate through each row of the DataFrame
         for index, row in df.iterrows():
             # Convert row to string with pipe separator
-            line = f"{numeric_cod_emet}|{year_gen}|{month_gen}|{n_remise}|{'|'.join(map(str, row))}"
+            formatted_row = [str(val) if not isinstance(val, str) and pd.api.types.is_numeric_dtype(val) else val for val in row]
+            line = f"{cod_emet}|{year_gen}|{month_gen}|{n_remise}|{'|'.join(map(str, formatted_row))}"
             # Write line to text file
             f.write(line + '\n')
     
