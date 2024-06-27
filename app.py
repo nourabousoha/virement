@@ -19,20 +19,20 @@ def save_last_remise(n_remise):
 def generate_output_filename(cod_emet, cod_dest, n_remise):
     now = datetime.now()
     dat_gen = now.strftime("%y%m%d")
-    return f"bvov{cod_emet}{cod_dest}0000{dat_gen}{n_remise}.unl"
+    return f"bvov1000460000{dat_gen}{n_remise}.unl"
 
 def excel_to_text(input_file, output_file, cod_emet, cod_dest, n_remise):
-    # Read Excel file
+    # Lire le fichier Excel
     df = pd.read_excel(input_file)
     
-    # Generate header information
+    # Générer les informations pour l'en-tête
     now = datetime.now()
     dat_gen = now.strftime("%d%m%y")
     heur_gen = now.strftime("%H%M")
     
-    # Write to text file
+    # Ouvrir le fichier texte en mode écriture
     with open(output_file, 'w') as f:
-        # Write header
+        # Écrire l'en-tête
         f.write(f"@nom_fic:{output_file}\n")
         f.write("@des_fic:\n")
         f.write(f"@dat_gen:{dat_gen}\n")
@@ -41,36 +41,36 @@ def excel_to_text(input_file, output_file, cod_emet, cod_dest, n_remise):
         f.write(f"@cod_dest:{cod_dest}\n")
         f.write(f"@N_remise:{n_remise}\n")
         
-        # Iterate through each row of the DataFrame
+        # Parcourir chaque ligne du DataFrame
         for index, row in df.iterrows():
-            # Convert row to string with pipe separator
+            # Convertir la ligne en chaîne de caractères avec séparation par des pipes
             line = '|'.join(map(str, row.values))
-            # Write line to text file
+            # Écrire la ligne dans le fichier texte
             f.write(line + '\n')
 
-# Streamlit Interface
-st.title('Excel to Text File Conversion')
+# Interface Streamlit en français
+st.title('Conversion de fichier Excel en fichier Texte')
 
-uploaded_file = st.file_uploader("Choose an Excel file", type=["xlsx", "xls"])
+uploaded_file = st.file_uploader("Choisissez un fichier Excel", type=["xlsx", "xls"])
 
 if uploaded_file is not None:
-    st.write("File uploaded:", uploaded_file.name)
+    st.write("Fichier téléchargé:", uploaded_file.name)
     
-    cod_emet = st.text_input("Sender code (required)", value="1000(CNRST)")
-    cod_dest = st.text_input("Recipient code (required)", value="46(TR DE RABAT)")
+    cod_emet = st.text_input("Code de l'émetteur (obligatoire)", value="1000(CNRST)")
+    cod_dest = st.text_input("Code du destinataire (obligatoire)", value="46(TR DE RABAT)")
     last_remise = get_last_remise()
-    n_remise = st.number_input("Remittance number (required)", value=last_remise + 1, min_value=1)
+    n_remise = st.number_input("Numéro de remise (obligatoire)", value=last_remise + 1, min_value=1)
     
-    if st.button('Convert'):
-        with st.spinner('Converting...'):
+    if st.button('Convertir'):
+        with st.spinner('Conversion en cours...'):
             output_file = generate_output_filename(cod_emet, cod_dest, n_remise)
             excel_to_text(uploaded_file, output_file, cod_emet, cod_dest, n_remise)
             save_last_remise(n_remise)
-        st.success(f'Conversion completed. File saved as {output_file}.')
+        st.success(f'Conversion terminée. Le fichier a été enregistré sous le nom {output_file}.')
         
-        # Download button for the output file
+        # Bouton de téléchargement pour le fichier de sortie
         st.download_button(
-            label="Download Output File",
+            label="Télécharger le fichier de sortie",
             data=open(output_file, 'rb').read(),
             file_name=output_file,
             mime="text/plain"
