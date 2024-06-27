@@ -18,7 +18,7 @@ def save_last_remise(n_remise):
 
 def generate_output_filename(cod_emet, cod_dest, n_remise):
     now = datetime.now()
-    dat_gen = now.strftime("%y%m%d")
+    dat_gen = now.strftime("%Y%m%d")  # Format YYYYMMDD pour l'année et le mois de la génération
     return f"bvov{cod_emet}{cod_dest}0000{dat_gen}{n_remise}.unl"
 
 def excel_to_text(input_file, output_file, cod_emet, cod_dest, n_remise, has_header, utilisateur):
@@ -30,16 +30,16 @@ def excel_to_text(input_file, output_file, cod_emet, cod_dest, n_remise, has_hea
     
     # Generate header information
     now = datetime.now()
-    dat_gen = now.strftime("%d%m%y")
-    heur_gen = now.strftime("%H%M")
+    year_gen = now.strftime("%Y")  # Année de la génération au format YYYY
+    month_gen = now.strftime("%m")  # Mois de la génération au format MM
     
     # Write to text file
     with open(output_file, 'w') as f:
         # Write header
         f.write(f"@nom_fic:{output_file}\n")
         f.write("@des_fic:\n")
-        f.write(f"@dat_gen:{dat_gen}\n")
-        f.write(f"@heur_gen:{heur_gen}\n")
+        f.write(f"@dat_gen:{year_gen}{month_gen}\n")  # Concaténation de l'année et du mois
+        f.write(f"@heur_gen:{now.strftime('%H%M')}\n")
         f.write(f"@cod_emet:{cod_emet}\n")
         f.write(f"@cod_dest:{cod_dest}\n")
         f.write(f"@N_remise:{n_remise}\n")
@@ -50,7 +50,7 @@ def excel_to_text(input_file, output_file, cod_emet, cod_dest, n_remise, has_hea
         # Iterate through each row of the DataFrame
         for index, row in df.iterrows():
             # Convert row to string with pipe separator
-            line = '|'.join(map(str, row))
+            line = f"{cod_emet}|{year_gen}|{month_gen}|{n_remise}|{'|'.join(map(str, row))}"
             # Write line to text file
             f.write(line + '\n')
 
